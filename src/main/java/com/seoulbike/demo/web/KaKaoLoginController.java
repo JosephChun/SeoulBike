@@ -1,5 +1,6 @@
 package com.seoulbike.demo.web;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.seoulbike.demo.domain.User;
 import com.seoulbike.demo.domain.UserRepository;
 import com.seoulbike.demo.service.UserService;
@@ -50,9 +51,29 @@ public class KaKaoLoginController {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        String response = restTemplate.postForObject("https://kauth.kakao.com/oauth/token", request, String.class);
+        JsonNode response = restTemplate.postForObject("https://kauth.kakao.com/oauth/token", request, JsonNode.class);
+        String accessToken = response.get("access_token").asText();
         log.info("response: {}", response);
+
+        JsonNode userInfo = getUserInfo(accessToken);
+        String userId = userInfo.get("id").asText();
+        String nickName = userInfo.get("properties").get("nickname").asText();
+
+        session.setAttribute("sessionedUser", userId);
+        session.setAttribute("nickName", nickName);
         return "redirect:/";
     }
 
+    public JsonNode getUserInfo(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.TEXT_HTML, MediaType.APPLICATION_JSON));
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<HttpHeaders> request = new HttpEntity<>(headers);
+
+        JsonNode response = restTemplate.postForObject("https://kapi.kakao.com/v2/user/me",request, JsonNode.class);
+
+        return response;
+
+    }
 }
