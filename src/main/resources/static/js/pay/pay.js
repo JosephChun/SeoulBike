@@ -3,9 +3,10 @@ $(".pay").on("click", function (e) {
     alert("o");
     $.ajax({
         type:'post',
-        url:"/pay",
-        success: function () {
-            alert("zzz");
+        url:"/api/pay",
+        data: "text",
+        success: function (data) {
+            window.open(data);
         }
     });
 });

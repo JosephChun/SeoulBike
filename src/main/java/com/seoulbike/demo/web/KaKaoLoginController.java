@@ -1,12 +1,9 @@
 package com.seoulbike.demo.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.seoulbike.demo.domain.User;
-import com.seoulbike.demo.domain.UserRepository;
-import com.seoulbike.demo.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,9 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.net.HttpURLConnection;
+
 import java.util.Arrays;
 
 @Controller
@@ -27,11 +23,7 @@ import java.util.Arrays;
 public class KaKaoLoginController {
     private static final Logger log = LoggerFactory.getLogger(KaKaoLoginController.class);
 
-    @Resource(name = "userService")
-    private UserService userService;
-
-    @Autowired
-    UserRepository userRepository;
+    private static final String CLIENT_ID = "ff16e8e6cd2f7b78da632c2d47250fd3";
 
     private RestTemplate restTemplate = new RestTemplate();
     
@@ -45,7 +37,7 @@ public class KaKaoLoginController {
         headers.setAccept(Arrays.asList(MediaType.TEXT_HTML, MediaType.APPLICATION_JSON));
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "ff16e8e6cd2f7b78da632c2d47250fd3");
+        params.add("client_id", CLIENT_ID);
         params.add("redirect_uri", "http://localhost:8080/api/kakao/oauth");
         params.add("code", code);
 
@@ -72,7 +64,7 @@ public class KaKaoLoginController {
         HttpEntity<HttpHeaders> request = new HttpEntity<>(headers);
 
         JsonNode response = restTemplate.postForObject("https://kapi.kakao.com/v2/user/me",request, JsonNode.class);
-
+        log.info("response: {}" +response);
         return response;
 
     }
