@@ -9,10 +9,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
 @Controller
@@ -22,9 +22,13 @@ public class PayController {
 
 
     @GetMapping("/success")
-    public String success(String pg_token, HttpSession session) {
+    public String success(String pg_token, @RequestHeader(value = "X-dino_tid") String tid) {
+
+//        log.debug("entity: {}", httpEntity.getBody());
+        log.info(tid + "zz");
+
         log.info("success");
-        log.info("pgtoken"+pg_token);
+//        log.info("pgtoken"+pg_token);
 //        log.info("dd"+headers.get("tid"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -33,7 +37,8 @@ public class PayController {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("cid", "TC0ONETIME");
-        params.add("tid", session.getAttribute("tid").toString());
+
+        params.add("tid", "tid");
         params.add("partner_user_id", "partner_user_id");
         params.add("partner_order_id", "partner_order_id");
         params.add("pg_token", pg_token);

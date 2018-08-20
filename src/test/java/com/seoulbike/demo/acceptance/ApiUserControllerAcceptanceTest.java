@@ -31,7 +31,7 @@ public class ApiUserControllerAcceptanceTest {
     @Autowired
     TestRestTemplate testRestTemplate;
 
-
+    // 아아아아...
     @Test
     public void create() {
         HttpHeaders headers = new HttpHeaders();

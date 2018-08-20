@@ -22,7 +22,7 @@ public class ApiPayController {
 
 
     @PostMapping("")
-    public ResponseEntity<String> home(HttpSession session) {
+    public ResponseEntity<String> home() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization", "KakaoAK 88b102d5940b30748955db127f6c1f90");
@@ -47,8 +47,9 @@ public class ApiPayController {
         JsonNode response = new RestTemplate().postForObject("https://kapi.kakao.com/v1/payment/ready", request, JsonNode.class);
         log.info("response: {}" + response);
 
-        session.setAttribute("tid",response.get("tid").asText());
-        return new ResponseEntity<String>(response.get("next_redirect_pc_url").asText(), headers, HttpStatus.OK);
+        headers.set("X-dino_tid", "tid="+response.get("tid").asText());
+
+        return new ResponseEntity<>(response.get("next_redirect_pc_url").asText(), headers, HttpStatus.OK);
     }
 
 }

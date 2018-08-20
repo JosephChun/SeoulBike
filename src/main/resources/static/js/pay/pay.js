@@ -1,6 +1,6 @@
 $(".pay").on("click", function (e) {
     e.preventDefault();
-    alert("o");
+
     $.ajax({
         type:'post',
         url:"/api/pay",
@@ -9,4 +9,7 @@ $(".pay").on("click", function (e) {
             window.open(data);
         }
     });
+
 });
+
+//백엔드 개발자도 js를 공부해야 좋다.
